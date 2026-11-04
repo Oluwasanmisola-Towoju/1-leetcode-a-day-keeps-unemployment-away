@@ -1,0 +1,107 @@
+// given a string s, return the longest palindromic substring in s
+
+const s = "bdaba";
+
+// TWO POINTERS OPTIMAL
+// TIME COMPLEXITY: O(n^2)
+// SPACE COMPLEXITY: O(1)
+class MySolution {
+    static longestPalindrome(s) {
+        if (!s || s.length < 1) {
+            return ""; 
+        }
+
+        let left = 0;
+        let right = 0;
+        for (let i = 0; i < s.length; i++) {
+            let len1 = this.checkPalindrome(s, i, i);
+            let len2 = this.checkPalindrome(s, i, i + 1);
+            let len = Math.max(len1, len2);
+
+            if (len > right - left + 1) {
+                left = i - Math.floor((len - 1)/2);
+                right = i + Math.floor(len/2);
+            }
+        }
+
+        return s.substring(left, right + 1);
+    }
+
+    checkPalindrome(s, left, right) {
+        let l = left;
+        let r = right; 
+
+        while(l >= 0 && r < s.length && s.charAt(l) === s.charAt(r)) {
+            l--;
+            r++;
+        }
+
+        return r -l -1;
+    }
+}
+
+// BRUTE FORCE
+// TIME COMPLEXITY: O(n^3)
+// SPACE COMPLEXITY: O(1)
+class Solution {
+    static longestPalindrome(s) {
+        let res = '';
+        let resLen = 0;
+
+        for (let i = 0; i < s.length; i++) {
+            for (let j = i; j < s.length; j++) {
+                let l = i,
+                    r = j;
+                while (l < r && s[l] === s[r]) {
+                    l++;
+                    r--;
+                }
+
+                if (l >= r && resLen < j - i + 1) {
+                    res = s.slice(i, j + 1);
+                    resLen = j - i + 1;
+                }
+            }
+        }
+
+        return res;
+    }
+}
+
+// TWO POINTERS
+// TIME COMPLEXITY: O(n^2)
+// SPACE COMPLEXITY: 0(n)
+class Solution {
+    static longestPalindrome(s) {
+        let resIdx = 0;
+        let resLen = 0;
+
+        for (let i = 0; i < s.length; i++) {
+            // odd length
+            let l = i;
+            let r = i;
+            while (l >= 0 && r < s.length && s.charAt(l) === s.charAt(r)) {
+                if (r - l + 1 > resLen) {
+                    resIdx = l;
+                    resLen = r - l + 1;
+                }
+                l--;
+                r++;
+            }
+
+            // even length
+            l = i;
+            r = i + 1;
+            while (l >= 0 && r < s.length && s.charAt(l) === s.charAt(r)) {
+                if (r - l + 1 > resLen) {
+                    resIdx = l;
+                    resLen = r - l + 1;
+                }
+                l--;
+                r++;
+            }
+        }
+
+        return s.substring(resIdx, resIdx + resLen);
+    }
+}
